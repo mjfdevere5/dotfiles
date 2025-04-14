@@ -56,11 +56,11 @@ defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
 
-# Restart automatically if the computer freezes
-sudo systemsetup -setrestartfreeze on
+# Restart automatically if the computer freezes; may fail silently on modern macOS versions
+sudo systemsetup -setrestartfreeze on || echo "⚠️ Could not enable restart on freeze."
 
 # Never go into computer sleep mode
-sudo systemsetup -setcomputersleep Off > /dev/null
+sudo pmset -a sleep 0
 
 # Disable Notification Center and remove the menu bar icon
 launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
@@ -218,6 +218,7 @@ defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 # Use list view in all Finder windows by default
 # Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+defaults write com.apple.finder FXPreferredSearchViewStyle -string "Nlsv"
 
 # Disable the warning before emptying the Trash
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
@@ -231,6 +232,15 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 	General -bool true \
 	OpenWith -bool true \
 	Privileges -bool true
+
+# Experimental: Use python's plistlib to modify the columns that show in List view
+THIS_DIR="$(cd -- "$(dirname -- "${(%):-%N}")" && pwd)" # Get the directory where this script lives
+defaults export com.apple.finder "$THIS_DIR/finder_tmp.plist"
+python3 "$THIS_DIR/modify_finder_columns.py"
+defaults import com.apple.finder "$THIS_DIR/finder_tmp.plist"
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+mv "$THIS_DIR/finder_tmp.plist" ~/.Trash/finder_tmp_$timestamp.plist # timestamped in case I need to dig it out again
+killall Finder
 
 
 ###############################################################################
@@ -560,4 +570,5 @@ if [[ ! ($* == *--no-restart*) ]]; then
   done
 fi
 
-printf "Please log out and log back in to make all settings take effect.\n"
+SCRIPT_NAME="${(%):-%N}"
+printf "✅ Completed %s\n" "$SCRIPT_NAME. Please log out and log back in to make all settings take effect.\n"

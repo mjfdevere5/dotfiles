@@ -1,6 +1,8 @@
 #!/bin/zsh
 
-DOTFILES_DIR="$HOME/Coding/dotfiles"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${(%):-%N}")" && pwd)" # Get the directory where this script lives
+PARENT_DIR="$(dirname "$SCRIPT_DIR")" # Get the parent of that directory
+DOTFILES_DIR="$PARENT_DIR/dotfiles"
 
 # Check if the dotfiles directory exists
 if [[ ! -d "$DOTFILES_DIR" ]]; then

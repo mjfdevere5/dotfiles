@@ -4,6 +4,14 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${(%):-%N}")" && pwd)" # Get the directory wh
 PARENT_DIR="$(dirname "$SCRIPT_DIR")" # Get the parent of that directory
 DOTFILES_DIR="$PARENT_DIR"
 
+# List of approved dotfiles to symlink
+APPROVED_DOTFILES=(
+  ".gitconfig"
+  ".gitignore"
+  ".zprofile"
+  ".zshrc"
+)
+
 # Check if the dotfiles directory exists
 if [[ ! -d "$DOTFILES_DIR" ]]; then
   echo "❌ Error: Directory '$DOTFILES_DIR' does not exist."
@@ -11,27 +19,24 @@ if [[ ! -d "$DOTFILES_DIR" ]]; then
 fi
 
 echo "📁 Found dotfiles directory: $DOTFILES_DIR"
-echo "🔗 Creating symlinks in $HOME..."
 
 # Loop through all dotfiles in the directory
-for file in "$DOTFILES_DIR"/.*(N); do
-  filename="${file:t}"
+for filename in "${APPROVED_DOTFILES[@]}"; do
+  src="$DOTFILES_DIR/$filename"
+  dest="$HOME/$filename"
 
-  # Skip '.' and '..'
-  if [[ "$filename" == "." || "$filename" == ".." ]]; then
+  if [[ ! -e "$src" ]]; then
+    echo "⚠️  Skipping $filename — file not found in $DOTFILES_DIR"
     continue
   fi
 
-  target="$HOME/$filename"
-
-  # Remove existing symlink if present
-  if [[ -L "$target" ]]; then
-    echo "🧹 Removing existing symlink: $target"
-    rm "$target"
+  if [[ -L "$dest" || -e "$dest" ]]; then
+    echo "🧹 Removing existing file or symlink: ~/$filename"
+    rm -rf "$dest"
   fi
 
-  echo "🔗 Linking $file -> $target"
-  ln -s "$file" "$target"
+  ln -s "$src" "$dest"
+  echo "🔗 Linked $filename"
 done
 
 echo "✅ Done!"

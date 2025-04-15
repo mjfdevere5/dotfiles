@@ -63,7 +63,7 @@ sudo systemsetup -setrestartfreeze on || echo "⚠️ Could not enable restart o
 sudo pmset -a sleep 0
 
 # Disable Notification Center and remove the menu bar icon
-launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
+# launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null # doesn't seem to work.
 
 # Disable automatic capitalization as it’s annoying when typing code
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
@@ -247,6 +247,10 @@ killall Finder
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
 
+# Disable 'Click to Show Desktop' and disable the tip
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+defaults write com.apple.WindowManager HasDisplayedShowDesktopEducation -bool true
+
 # Minimize windows into their application’s icon
 defaults write com.apple.dock minimize-to-application -bool true
 
@@ -396,6 +400,19 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
+# Set the global hotkey to ^ (control) + `
+defaults write com.googlecode.iterm2 Hotkey -int 1
+defaults write com.googlecode.iterm2 HotkeyChar -int 96
+defaults write com.googlecode.iterm2 HotkeyCode -int 50
+defaults write com.googlecode.iterm2 HotkeyModifiers -int 262401
+
+# Select 'Only Restore Hotkey Window' as the window restoration policy
+defaults write com.googlecode.iterm2 OpenArrangementAtStartup -int 0
+defaults write com.googlecode.iterm2 OpenNoWindowsAtStartup -int 1
+
+# Use ^ (control) + number to choose split pane
+defaults write com.googlecode.iterm2 SwitchPaneModifier -int 1
+
 
 ###############################################################################
 # Time Machine                                                                #
@@ -495,6 +512,9 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 ###############################################################################
 # Google Chrome & Google Chrome Canary                                        #
 ###############################################################################
+
+# Make Chrome the default browser
+defaultbrowser chrome # (brew install defaultbrowser)
 
 # Disable the all too sensitive backswipe on trackpads
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false

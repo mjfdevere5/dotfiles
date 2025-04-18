@@ -22,3 +22,4 @@
   tool = kdiff3
 [alias]
   lo = log --pretty=oneline
+  standup = !git log --since='3 days ago' --author=\"$(git config user.name)\" --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all

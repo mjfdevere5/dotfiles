@@ -23,3 +23,8 @@
 if [ -d "$HOME/Library/Python/3.9/bin" ]; then
   export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 fi
+
+# Add personal bin directory to PATH
+if [ -d "$HOME/bin" ]; then
+  export PATH="$HOME/bin:$PATH"
+fi

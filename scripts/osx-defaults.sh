@@ -25,10 +25,11 @@ fi
 sudo pmset -a standbydelay 86400
 
 # Disable the sound effects on boot
-sudo nvram SystemAudioVolume=" "
+# sudo nvram SystemAudioVolume=" " # doesn't work
 
 # Disable sound effects for emptying Trash or taking a screenshot
-defaults write com.apple.systemsound "com.apple.sound.uiaudio.enabled" -int 0
+# defaults write com.apple.systemsound "com.apple.sound.uiaudio.enabled" -int 0  # doesn't work
+# defaults write -g com.apple.sound.uiaudio.enabled -int 0 # should work (haven't tested it!)
 
 # Expand save panel by default
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
@@ -45,7 +46,9 @@ defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
+# DANGEROUS
 # CREATES BUG WITH SYSTEM SETTINGS GUI # /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user # CREATES BUG WITH SYSTEM SETTINGS GUI
+# DANGEROUS
 
 # Disable Resume system-wide
 defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false

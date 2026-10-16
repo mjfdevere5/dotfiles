@@ -44,9 +44,9 @@ function newline_before_execution() {
 }
 add-zsh-hook preexec newline_before_execution
 
-# Prompt should say "[user] in [folder] on [git branch] ->"
+# Prompt should say " [user] in [folder] on [git branch] ->"
 setopt promptsubst
-PROMPT='%F{208}%n%f in %F{226}%~%f ${GIT_INFO} -> '
+PROMPT=' %F{208}%n%f in %F{226}%~%f ${GIT_INFO} -> '
 
 
 ##################################################
@@ -75,29 +75,13 @@ activate() {
 
 
 ##################################################
-# CONDA (when you run `conda init zsh`)
-##################################################
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-
-##################################################
 # OTHER
 ##################################################
 
 eval "$(zoxide init zsh)"
 
+
+export PATH="$HOME/.local/bin:$PATH"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
